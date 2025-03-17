@@ -1,0 +1,20 @@
+defmodule Blog.Users do
+  alias Blog.Repo
+  alias Blog.Users.User
+
+  def get_user_by_email(email), do: Repo.get_by(User, email: email)
+
+  def authenticate_user(email, password) do
+    user = get_user_by_email(email)
+    case Bcrypt.verify_pass(password, user.password_hash) do
+      true -> {:ok, user}
+      _ -> {:error, :invalid_credentials}
+    end
+  end
+
+  def register_user(attrs) do
+    %User{}
+    |> User.changeset(attrs)
+    |> Repo.insert()
+  end
+end
