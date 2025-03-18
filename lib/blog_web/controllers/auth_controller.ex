@@ -1,6 +1,7 @@
 defmodule BlogWeb.AuthController do
   use BlogWeb, :controller
 
+  alias BlogWeb.AuthErrorHandler
   alias Blog.Users
   alias Blog.Guardian
 
@@ -33,20 +34,12 @@ defmodule BlogWeb.AuthController do
         })
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        errors = translate_errors(changeset)
+        errors = AuthErrorHandler.translate_errors(changeset)
         conn
         |> put_status(:unprocessable_entity)
         |> json(%{
           errors: errors
         })
     end
-  end
-
-  defp translate_errors(changeset) do
-    Ecto.Changeset.traverse_errors(changeset, fn {msg, opts} ->
-      Enum.reduce(opts, msg, fn {key, value}, acc ->
-        String.replace(acc, "%{#{key}}", to_string(value))
-      end)
-    end)
   end
 end

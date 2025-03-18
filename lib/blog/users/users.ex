@@ -4,6 +4,8 @@ defmodule Blog.Users do
 
   def get_user_by_email(email), do: Repo.get_by(User, email: email)
 
+  def get_user!(id), do: Repo.get_by(User, id: id)
+
   def authenticate_user(email, password) do
     user = get_user_by_email(email)
     case Bcrypt.verify_pass(password, user.password_hash) do

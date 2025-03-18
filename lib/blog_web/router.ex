@@ -11,8 +11,8 @@ defmodule BlogWeb.Router do
       error_handler: BlogWeb.AuthErrorHandler
 
     plug Guardian.Plug.VerifyHeader, scheme: "Bearer"
-    plug Guardian.Plug.EnsureAuthenticated
     plug Guardian.Plug.LoadResource
+    plug Guardian.Plug.EnsureAuthenticated
   end
 
   scope "/api", BlogWeb do
@@ -25,6 +25,8 @@ defmodule BlogWeb.Router do
       pipe_through [:api_auth]
 
       get "/hello", ProtectedController, :hello
+      get "/blogs", BlogController, :get_all
+      post "/blogs", BlogController, :create
     end
   end
 
