@@ -25,8 +25,11 @@ defmodule BlogWeb.Router do
       pipe_through [:api_auth]
 
       get "/hello", ProtectedController, :hello
+
       get "/blogs", BlogController, :get_all
+      get "/blogs/:id", BlogController, :get_by_id
       post "/blogs", BlogController, :create
+      delete "/blogs/:id", BlogController, :delete
     end
   end
 
