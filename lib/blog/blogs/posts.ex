@@ -21,6 +21,20 @@ defmodule Blog.Blogs do
     else
       {:error, "can't delete something you don't own"}
     end
+  end
 
+  def update(attrs, user_id) do
+    post = Repo.get(Post, attrs["id"])
+
+    if post.user_id == user_id do
+      changeset = Post.changeset(post, attrs)
+
+      case Repo.update(changeset) do
+        {:ok, updated_post} -> {:ok, updated_post}
+        {:error, changeset} -> {:error, changeset}
+      end
+    else
+      {:error, "can't update something you don't own"}
+    end
   end
 end

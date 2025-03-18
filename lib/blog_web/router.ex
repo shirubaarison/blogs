@@ -30,6 +30,7 @@ defmodule BlogWeb.Router do
       get "/blogs/:id", BlogController, :get_by_id
       post "/blogs", BlogController, :create
       delete "/blogs/:id", BlogController, :delete
+      put "/blogs/:id", BlogController, :put
     end
   end
 

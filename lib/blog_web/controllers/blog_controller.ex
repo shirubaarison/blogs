@@ -54,4 +54,22 @@ defmodule BlogWeb.BlogController do
     end
   end
 
+  def put(conn, %{"id" => _id, "title" => _t, "content" => _c, "category" => _ca, "tags" => _ta} = params) do
+    user = Guardian.Plug.current_resource(conn)
+
+    case Blogs.update(params, user.id) do
+      {:ok, post} ->
+        conn
+        |> render(:show, %{post: post})
+
+      {:error, %Ecto.Changeset{} = changeset} ->
+        errors = AuthErrorHandler.translate_errors(changeset)
+        conn
+        |> put_status(:bad_request)
+        |> json(%{
+          errors: errors
+        })
+    end
+  end
+
 end
