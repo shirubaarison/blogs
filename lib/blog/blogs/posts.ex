@@ -7,17 +7,24 @@ defmodule Blog.Blogs do
   @valid_filters ["tags", "category", "term"]
 
   def get_all(filters \\ %{}) do
-    filters
-    |> Enum.filter(fn {key, _} -> key in @valid_filters end)
-    |> Enum.reduce(Post, fn
-      {"tags", value}, query -> from p in query, where: ^value in p.tags
-      {"category", value}, query -> from p in query, where: p.category == ^value
-      {"term", value}, query -> from p in query, where: ilike(p.title, ^"%#{value}%") or ilike(p.content, ^"%#{value}%")
-    end)
-    |> Repo.all()
+    query =
+      filters
+      |> Enum.filter(fn {key, _} -> key in @valid_filters end)
+      |> Enum.reduce(Post, fn
+        {"tags", value}, query -> from p in query, where: ^value in p.tags
+        {"category", value}, query -> from p in query, where: p.category == ^value
+        {"term", value}, query -> from p in query, where: ilike(p.title, ^"%#{value}%") or ilike(p.content, ^"%#{value}%")
+      end)
+      |> from(preload: [:user])
+
+      Repo.all(query)
   end
 
-  def get(id), do: Repo.get(Post, id)
+  def get(id) do
+    Post
+    |> Repo.get(id)
+    |> Repo.preload(:user)
+  end
 
   def create(attrs, user_id) do
     %Post{user_id: user_id}

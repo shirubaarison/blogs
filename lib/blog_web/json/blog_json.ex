@@ -22,7 +22,11 @@ defmodule BlogWeb.BlogJSON do
       tags: post.tags,
       views: post.views,
       createdAt: post.inserted_at,
-      updatedAt: post.updated_at
+      updatedAt: post.updated_at,
+      author: %{
+        username: post.user.username,
+        name: post.user.full_name
+      }
     }
   end
 end
