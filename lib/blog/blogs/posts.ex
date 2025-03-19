@@ -1,8 +1,21 @@
 defmodule Blog.Blogs do
+  import Ecto.Query
+
   alias Blog.Repo
   alias Blog.Blogs.Post
 
-  def get_all(), do: Repo.all(Post)
+  @valid_filters ["tags", "category", "term"]
+
+  def get_all(filters \\ %{}) do
+    filters
+    |> Enum.filter(fn {key, _} -> key in @valid_filters end)
+    |> Enum.reduce(Post, fn
+      {"tags", value}, query -> from p in query, where: ^value in p.tags
+      {"category", value}, query -> from p in query, where: p.category == ^value
+      {"term", value}, query -> from p in query, where: ilike(p.title, ^"%#{value}%") or ilike(p.content, ^"%#{value}%")
+    end)
+    |> Repo.all()
+  end
 
   def get(id), do: Repo.get(Post, id)
 

@@ -26,7 +26,7 @@ defmodule BlogWeb.Router do
 
       get "/hello", ProtectedController, :hello
 
-      get "/blogs", BlogController, :get_all
+      get "/blogs", BlogController, :index
       get "/blogs/:id", BlogController, :get_by_id
       post "/blogs", BlogController, :create
       delete "/blogs/:id", BlogController, :delete

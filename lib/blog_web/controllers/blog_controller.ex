@@ -4,10 +4,12 @@ defmodule BlogWeb.BlogController do
   alias BlogWeb.AuthErrorHandler
   alias Blog.Blogs
 
-  def get_all(conn, _params) do
+  def index(conn, params) do
+    posts = Blogs.get_all(params)
+
     conn
     |> put_status(:ok)
-    |> render(:index, %{posts: Blogs.get_all()})
+    |> render(:index, %{posts: posts})
   end
 
   def get_by_id(conn, %{"id" => post_id}) do
