@@ -9,6 +9,10 @@ defmodule BlogWeb.BlogJSON do
     %{post: data(post)}
   end
 
+  def bad_request(%{error: error}) do
+    %{error: error}
+  end
+
   defp data(%Post{} = post) do
     %{
       id: post.id,

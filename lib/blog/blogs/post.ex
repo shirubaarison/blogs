@@ -2,6 +2,11 @@ defmodule Blog.Blogs.Post do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias Blog.Users.User
+
+  @primary_key {:id, Ecto.UUID, autogenerate: true}
+  @foreign_key_type Ecto.UUID
+
   @derive {Jason.Encoder, only: [:id, :title, :content, :category, :tags, :user_id, :inserted_at, :updated_at]}
 
   schema "posts" do
@@ -10,7 +15,8 @@ defmodule Blog.Blogs.Post do
     field :category, :string
     field :views, :integer, default: 0
     field :tags, {:array, :string}
-    field :user_id, :id
+
+    belongs_to :user, User
 
     timestamps(type: :utc_datetime)
   end

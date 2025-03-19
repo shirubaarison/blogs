@@ -11,14 +11,20 @@ defmodule BlogWeb.BlogController do
   end
 
   def get_by_id(conn, %{"id" => post_id}) do
-    with {id, ""} <- Integer.parse(post_id),
-         post when not is_nil(post) <- Blogs.get(id) do
-      conn
-      |> put_status(:ok)
-      |> render(:show, %{post: post})
-    else
+    case Ecto.UUID.cast(post_id) do
+      {:ok, valid_uuid} ->
+        case Blogs.get(valid_uuid) do
+          nil ->
+            send_resp(conn, :not_found, "")
+          post ->
+            conn
+            |> put_status(:ok)
+            |> render(:show, %{post: post})
+        end
       _ ->
-        send_resp(conn, :not_found, "")
+        conn
+        |> put_status(:bad_request)
+        |> render(:bad_request, %{error: "malformatted id"})
     end
   end
 

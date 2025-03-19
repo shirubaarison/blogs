@@ -2,12 +2,18 @@ defmodule Blog.Users.User do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias Blog.Blogs.Post
+
+  @primary_key {:id, Ecto.UUID, autogenerate: true}
+
   schema "users" do
     field :username, :string
     field :full_name, :string
     field :email, :string
     field :password_hash, :string
     field :password, :string, virtual: true, redact: true
+
+    has_many :posts, Post
 
     timestamps(type: :utc_datetime)
   end
